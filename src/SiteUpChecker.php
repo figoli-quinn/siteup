@@ -18,9 +18,9 @@ class SiteUpChecker
 		$this->clientConfig = ['http_errors' => true];
 	}
 
-	public function getResponse(String $url)
+	public function getResponse(String $url): Response
 	{
-		$response;
+		$response = null;
 		
 		try {
 			$response = $this->client->get($url, $this->clientConfig);
@@ -32,7 +32,12 @@ class SiteUpChecker
 		return $response;
 	}
 
-	public function getStatusCode(String $url)
+	public function getResponseAsync(String $url)
+	{
+		return $this->client->getAsync($url, $this->clientConfig);
+	} 
+
+	public function getStatusCode(String $url): int
 	{
 		$response = $this->getResponse($url);
 		return $response->getStatusCode();
@@ -44,17 +49,17 @@ class SiteUpChecker
 		return $this->statusCodeIsUp($response->getStatusCode());
 	}
 
-	public function isDown(String $url)
+	public function isDown(String $url): bool
 	{
 		return !$this->isUp($url);
 	}
 
-	public function statusCodeIsUp(String $statusCode)
+	public function statusCodeIsUp(int $statusCode): bool
 	{
 		return in_array($statusCode, $this->upStatusCodes);
 	}
 
-	public function statusCodeIsDown(String $statusCode)
+	public function statusCodeIsDown(int $statusCode): bool
 	{
 		return !$this->statusCodeIsUp($statusCode);
 	}
